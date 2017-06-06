@@ -2,23 +2,23 @@ version: '2'
 
 services:
     db:
-        image: mysql
+        image: percona
         volumes:
-            - "./.data/db:/var/lib/mysql"
+            - "./.data/db:~/mysql/lib"
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     php:
-        build: php7-fpm
+        build: php56-fpm
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/symfony
+            - ${SYMFONY_APP_PATH}:/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
     nginx:
         build: nginx
         ports:
-            - 80:80
+            - 80:88
         volumes_from:
             - php
         volumes:
@@ -26,7 +26,7 @@ services:
     elk:
         image: willdurand/elk
         ports:
-            - 81:80
+            - 81:88
         volumes:
             - ./elk/logstash:/etc/logstash
             - ./elk/logstash/patterns:/opt/logstash/patterns
